@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NPOI.ExcelExport.Attributes
+namespace NPOI.ExcelExtend.Attributes
 {
     public class ExcelColumnAttribute : Attribute
     {

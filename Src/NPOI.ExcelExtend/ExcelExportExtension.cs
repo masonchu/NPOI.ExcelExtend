@@ -1,4 +1,4 @@
-﻿using NPOI.ExcelExport.Attributes;
+﻿using NPOI.ExcelExtend.Attributes;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace NPOI.ExcelExport
+namespace NPOI.ExcelExtend
 {
     public static class ExportExcelExtensions
     {
