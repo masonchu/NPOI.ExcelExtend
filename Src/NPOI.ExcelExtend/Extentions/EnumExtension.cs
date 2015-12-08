@@ -6,7 +6,7 @@ using System.Text;
 
 namespace NPOI.ExcelExtend.Extentions
 {
-    public static class EnumExtention
+    public static class EnumExtension
     {
         /// <summary>
         /// get enum description

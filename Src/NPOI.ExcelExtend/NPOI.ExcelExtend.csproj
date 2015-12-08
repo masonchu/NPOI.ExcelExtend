@@ -63,6 +63,7 @@
     <Compile Include="Attributes\ChildDataAttribute.cs" />
     <Compile Include="Attributes\ExcelColumnAttribute.cs" />
     <Compile Include="ExcelExportExtension.cs" />
+    <Compile Include="Extentions\EnumExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

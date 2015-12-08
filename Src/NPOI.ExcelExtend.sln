@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPOI.ExcelExtend", "NPOI.Ex
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{80CB6635-CE90-49CE-B673-8A2D6B8E7773}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPOI.ExcelExtend.Test", "Testing\NPOI.ExcelExtend.Test\NPOI.ExcelExtend.Test.csproj", "{B9CBD967-1F2C-4684-9C54-657FE4C640A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,8 +21,15 @@ Global
 		{959C1E83-3B4E-4A09-B9E8-C812164DFA66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{959C1E83-3B4E-4A09-B9E8-C812164DFA66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{959C1E83-3B4E-4A09-B9E8-C812164DFA66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9CBD967-1F2C-4684-9C54-657FE4C640A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9CBD967-1F2C-4684-9C54-657FE4C640A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9CBD967-1F2C-4684-9C54-657FE4C640A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9CBD967-1F2C-4684-9C54-657FE4C640A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B9CBD967-1F2C-4684-9C54-657FE4C640A2} = {80CB6635-CE90-49CE-B673-8A2D6B8E7773}
 	EndGlobalSection
 EndGlobal
