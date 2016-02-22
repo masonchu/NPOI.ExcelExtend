@@ -7,17 +7,18 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Resources;
 
 namespace NPOI.ExcelExtend
 {
     public static class ExportExcelExtensions
     {
-        public static MemoryStream ExportExcel<T>(this IEnumerable<T> dataList)
+        public static MemoryStream ExportExcel<T>(this IEnumerable<T> dataList, ResourceManager rm = null)
         {
             //Create workbook
             IWorkbook workbook = new XSSFWorkbook();
             ISheet worksheet = workbook.CreateSheet(string.Format("{0}", "Sheet1"));
-            dataList.ExcelSheet(worksheet);
+            dataList.ExcelSheet(worksheet, rm: rm);
 
             MemoryStream sw = new MemoryStream();
 
@@ -37,13 +38,13 @@ namespace NPOI.ExcelExtend
         /// <param name="dataList"></param>
         /// <param name="worksheet"></param>
         /// <returns></returns>
-        public static ISheet ExcelSheet<T>(this IEnumerable<T> dataList, ISheet worksheet)
+        public static ISheet ExcelSheet<T>(this IEnumerable<T> dataList, ISheet worksheet, ResourceManager rm = null)
         {
             var datatype = typeof(T);
 
             //Insert titles
             var row = worksheet.CreateRow(0);
-            var titleList = datatype.GetPropertyDisplayNames();
+            var titleList = datatype.GetPropertyDisplayNames(rm: rm);
             for (int cellNumber = 0; cellNumber < titleList.Count; cellNumber++)
             {
                 row.CreateCell(cellNumber).SetCellValue(titleList[cellNumber]);
@@ -146,7 +147,7 @@ namespace NPOI.ExcelExtend
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static List<string> GetPropertyDisplayNames(this Type type, List<string> titleList = null)
+        public static List<string> GetPropertyDisplayNames(this Type type, List<string> titleList = null, ResourceManager rm = null)
         {
             titleList = (titleList == null ? new List<string>() : titleList);
             var propertyInfos = type.GetProperties();
@@ -161,8 +162,19 @@ namespace NPOI.ExcelExtend
                     if (authAttr != null)
                     {
                         var titleName = propertyInfo.GetDisplayName();
-
+                        var displayAttrInfo = propertyInfo.GetCustomAttributes(true).Where(it => it.GetType() == typeof(DisplayAttribute)).SingleOrDefault();
+                        if (displayAttrInfo != null)
+                        {
+                            var displayAttr = displayAttrInfo as DisplayAttribute;
+                            var resourceType = displayAttr.ResourceType;
+                            if (resourceType != null && rm != null)
+                            {
+                                //var rm = new ResourceManager(resourceType);
+                                titleName = rm.GetString(titleName);
+                            }
+                        }
                         titleList.Add(titleName);
+
                     }
 
                     ///if this object of collection need to export
