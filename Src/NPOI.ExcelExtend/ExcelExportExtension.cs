@@ -13,6 +13,13 @@ namespace NPOI.ExcelExtend
 {
     public static class ExportExcelExtensions
     {
+        /// <summary>
+        /// generate Excel File 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dataList"></param>
+        /// <param name="rm"></param>
+        /// <returns></returns>
         public static MemoryStream ExportExcel<T>(this IEnumerable<T> dataList, ResourceManager rm = null)
         {
             //Create workbook
