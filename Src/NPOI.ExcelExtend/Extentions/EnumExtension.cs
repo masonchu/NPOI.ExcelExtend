@@ -19,6 +19,12 @@ namespace NPOI.ExcelExtend.Extentions
             return attribute == null ? @enum.ToString() : ((DescriptionAttribute)attribute).Description;
         }
 
+        /// <summary>
+        /// get enum description for specific enum
+        /// </summary>
+        /// <param name="enum"></param>
+        /// <param name="enumname"></param>
+        /// <returns></returns>
         public static string ToDescriptionString(this System.Enum @enum, string enumname)
         {
             try
