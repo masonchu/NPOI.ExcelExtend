@@ -51,7 +51,8 @@ namespace NPOI.ExcelExtend
 
             //Insert titles
             var row = worksheet.CreateRow(0);
-            var titleList = datatype.GetPropertyDisplayNames(rm: rm);
+            var execlColumnHelper = new ExcelColumnHelper(datatype);
+            var titleList = execlColumnHelper.GetPropertyDisplayNames(rm: rm);
             for (int cellNumber = 0; cellNumber < titleList.Count; cellNumber++)
             {
                 row.CreateCell(cellNumber).SetCellValue(titleList[cellNumber]);
@@ -63,7 +64,7 @@ namespace NPOI.ExcelExtend
             foreach (var row_item in dataList)
             {
                 ///row
-                var valueList = row_item.GetPropertyValues();
+                var valueList = execlColumnHelper.GetPropertyValues(row_item);
                 //var mergeRows = item.GetPropertyMergeRows();
                 ///TODO if need merge columns
                 //if (mergeRows > 1)
@@ -149,94 +150,7 @@ namespace NPOI.ExcelExtend
             return titleName;
         }
 
-        /// <summary>
-        /// get headers
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static List<string> GetPropertyDisplayNames(this Type type, List<string> titleList = null, ResourceManager rm = null)
-        {
-            titleList = (titleList == null ? new List<string>() : titleList);
-            var propertyInfos = type.GetProperties();
 
-            foreach (var propertyInfo in propertyInfos)
-            {
-                object[] attrs = propertyInfo.GetCustomAttributes(true);
-                foreach (object attr in attrs)
-                {
-                    ///if this column need to export
-                    ExcelColumnAttribute authAttr = attr as ExcelColumnAttribute;
-                    if (authAttr != null)
-                    {
-                        var titleName = propertyInfo.GetDisplayName();
-                        var displayAttrInfo = propertyInfo.GetCustomAttributes(true).Where(it => it.GetType() == typeof(DisplayAttribute)).SingleOrDefault();
-                        if (displayAttrInfo != null)
-                        {
-                            var displayAttr = displayAttrInfo as DisplayAttribute;
-                            var resourceType = displayAttr.ResourceType;
-                            if (resourceType != null && rm != null)
-                            {
-                                //var rm = new ResourceManager(resourceType);
-                                titleName = rm.GetString(titleName);
-                            }
-                        }
-                        titleList.Add(titleName);
-
-                    }
-
-                    ///if this object of collection need to export
-                    var childDataAttr = attr as ChildDataAttribute;
-                    if (childDataAttr != null)
-                    {
-                        GetPropertyDisplayNames(childDataAttr.type, titleList);
-                    }
-                }
-
-            }
-
-            return titleList;
-        }
-        /// <summary>
-        /// get a martix of object 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public static List<List<string>> GetPropertyValues<T>(this T data, List<List<string>> allValues = null)
-        {
-            allValues = allValues == null ? new List<List<string>>() : allValues;
-            var propertyValues = new List<string>();
-            var propertyInfos = data.GetType().GetProperties();
-
-            foreach (var propertyInfo in propertyInfos)
-            {
-                object[] attrs = propertyInfo.GetCustomAttributes(true);
-                foreach (object attr in attrs)
-                {
-                    ExcelColumnAttribute authAttr = attr as ExcelColumnAttribute;
-                    if (authAttr != null)
-                    {
-                        var val = propertyInfo.GetValue(data, null);
-                        var valString = val == null ? "" : val.ToString();
-                        propertyValues.Add(valString);
-                    }
-                    ///if this object of collection need to export
-                    var childDataAttr = attr as ChildDataAttribute;
-                    if (childDataAttr != null)
-                    {
-                        var vals = propertyInfo.GetValue(data, null);
-                        var val = vals as IEnumerable<Object>;
-                        foreach (var item in val)
-                        {
-                            GetPropertyValues(item, allValues);
-                        }
-                        //GetPropertyDisplayNames()
-                    }
-                }
-            }
-            allValues.Insert(0, propertyValues);
-
-            return allValues;
-        }
+      
     }
 }

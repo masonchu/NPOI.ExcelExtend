@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>NPOI.ExcelExtend</id>
+    <version>1.7.0</version>
+    <title>NPOI.ExcelExtend</title>
+    <authors>Mason Chu</authors>
+    <owners>Mason Chu</owners>
+    <licenseUrl>http://https://github.com/masonchu/NPOI.ExcelExtend</licenseUrl>
+    <projectUrl>http://https://github.com/masonchu/NPOI.ExcelExtend</projectUrl>
+    <iconUrl>http://https://github.com/masonchu/NPOI.ExcelExtend</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Excel extend attributes to generate excel file with header and data</description>
+    <releaseNotes>Excel extend attributes to generate excel file with header and data</releaseNotes>
+    <copyright></copyright>
+    <tags>NPOI Excel</tags>
+  </metadata>
+</package>
