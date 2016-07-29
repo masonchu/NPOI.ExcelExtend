@@ -10,29 +10,35 @@ namespace NPOI.ExcelExtend
 {
     internal static class CellExtension
     {
-        public static void SetCellValueByType(this ICell cell, IWorkbook workbook, object model, string dataFormat = null)
+        public static void SetCellValueByType(this ICell cell, IWorkbook workbook, object model, string dataFormat = "")
         {
-            double number;
-            DateTime datetime;
-            bool modelBool;
-            var newDataFormat = workbook.CreateDataFormat();
-            var style = workbook.CreateCellStyle();
-            cell.CellStyle = SetStyle(workbook, dataFormat);
-
-
-            if (TryParseNumeric(model, out number))
-                cell.SetCellValue(number);
-            else if (TryParseBoolean(model, out modelBool))
-                cell.SetCellValue(modelBool);
-            else if (TryParseDateTime(model, out datetime))
+            if (model != null)
             {
-                cell.CellStyle = SetStyle(workbook, "yyyy/MM/dd HH:mm:ss");
+                double number;
+                DateTime datetime;
+                bool modelBool;
+                var newDataFormat = workbook.CreateDataFormat();
+                var style = workbook.CreateCellStyle();
+                cell.CellStyle = SetStyle(workbook, dataFormat);
 
-                cell.SetCellValue(datetime);
-            }
-            else
-            {
-                cell.SetCellValue(model.ToString());
+
+                if (TryParseNumeric(model, out number))
+                {
+                    cell.SetCellValue(number);
+                }
+                else if (TryParseBoolean(model, out modelBool))
+                    cell.SetCellValue(modelBool);
+                else if (TryParseDateTime(model, out datetime))
+                {
+                    cell.CellStyle = SetStyle(workbook, "yyyy/MM/dd HH:mm:ss");
+                    cell.SetCellValue(datetime);
+                }
+                else
+                {
+                    var modelString = model.ToString();
+                    cell.SetCellType(CellType.String);
+                    cell.SetCellValue(modelString);
+                }
             }
 
         }
@@ -57,8 +63,15 @@ namespace NPOI.ExcelExtend
         {
             //if (expression == null)
             //    return false;
-
-            return Double.TryParse(Convert.ToString(expression, CultureInfo.InvariantCulture), System.Globalization.NumberStyles.Any, NumberFormatInfo.InvariantInfo, out result);
+            if (expression.IsNumeric())
+            {
+                return Double.TryParse(Convert.ToString(expression, CultureInfo.InvariantCulture), System.Globalization.NumberStyles.Any, NumberFormatInfo.InvariantInfo, out result);
+            }
+            else
+            {
+                result = 0;
+                return false;
+            }
         }
 
         private static bool TryParseBoolean(object expression, out bool result)
@@ -73,8 +86,35 @@ namespace NPOI.ExcelExtend
         {
             //if (expression == null)
             //    return false;
+            if (expression.IsDateTime())
+            {
+                return DateTime.TryParse(Convert.ToString(expression, CultureInfo.InvariantCulture), out result);
+            }
+            else
+            {
+                result = DateTime.Now;
+                return false;
+            }
+        }
 
-            return DateTime.TryParse(Convert.ToString(expression, CultureInfo.InvariantCulture), out result);
+        private static bool IsNumeric(this object value)
+        {
+            return value is sbyte
+                    || value is byte
+                    || value is short
+                    || value is ushort
+                    || value is int
+                    || value is uint
+                    || value is long
+                    || value is ulong
+                    || value is float
+                    || value is double
+                    || value is decimal;
+        }
+
+        private static bool IsDateTime(this object value)
+        {
+            return value is DateTime;
         }
     }
 }
