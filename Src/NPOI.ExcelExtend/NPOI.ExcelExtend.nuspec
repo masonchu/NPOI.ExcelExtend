@@ -16,7 +16,7 @@
     <tags>NPOI Excel</tags>
   </metadata>
   <files>
-    <file src="NPOI.ExcelExtend.dll" target="lib\net40\NPOI.ExcelExtend.dll" />
-    <file src="NPOI.ExcelExtend.dll" target="lib\net45\NPOI.ExcelExtend.dll" />
+    <file src="bin\Release\NPOI.ExcelExtend.dll" target="lib\net40\NPOI.ExcelExtend.dll" />
+    <file src="bin\Release\NPOI.ExcelExtend.dll" target="lib\net45\NPOI.ExcelExtend.dll" />
   </files>
 </package>
