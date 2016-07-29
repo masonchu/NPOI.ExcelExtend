@@ -14,7 +14,8 @@ namespace NPOI.ExcelExtend.Test.Models
         public string FirstName { get; set; }
         [ExcelColumn(Order = 2)]
         public string LastName { get; set; }
-
+        [ExcelColumn]
+        public bool IsMarried { get; set; }
 
         [ExcelColumn]
         public DateTime UpdateOn { get; set; }

@@ -118,10 +118,10 @@ namespace NPOI.ExcelExtend
         /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
         /// <returns></returns>
-        public List<List<string>> GetPropertyValues(object data, List<List<string>> allValues = null)
+        public List<List<object>> GetPropertyValues(object data, List<List<object>> allValues = null)
         {
-            allValues = allValues == null ? new List<List<string>>() : allValues;
-            var propertyValues = new List<string>();
+            allValues = allValues == null ? new List<List<object>>() : allValues;
+            var propertyValues = new List<object>();
             var propertyInfos = data.GetType().GetProperties();
 
             foreach (var propertyInfo in ExcelColumns)
@@ -133,8 +133,8 @@ namespace NPOI.ExcelExtend
                     if (authAttr != null)
                     {
                         var val = propertyInfo.GetValue(data, null);
-                        var valString = val == null ? "" : val.ToString();
-                        propertyValues.Add(valString);
+                        //var valString = val == null ? "" : val.ToString();
+                        propertyValues.Add(val);
                     }
                     ///if this object of collection need to export
                     var childDataAttr = attr as ChildDataAttribute;

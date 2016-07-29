@@ -25,7 +25,7 @@ namespace NPOI.ExcelExtend
             //Create workbook
             IWorkbook workbook = new XSSFWorkbook();
             ISheet worksheet = workbook.CreateSheet(string.Format("{0}", "Sheet1"));
-            dataList.ExcelSheet(worksheet, rm: rm);
+            dataList.ExcelSheet(worksheet, workbook, rm: rm);
 
             MemoryStream sw = new MemoryStream();
 
@@ -45,7 +45,7 @@ namespace NPOI.ExcelExtend
         /// <param name="dataList"></param>
         /// <param name="worksheet"></param>
         /// <returns></returns>
-        public static ISheet ExcelSheet<T>(this IEnumerable<T> dataList, ISheet worksheet, ResourceManager rm = null)
+        public static ISheet ExcelSheet<T>(this IEnumerable<T> dataList, ISheet worksheet, IWorkbook workbook, ResourceManager rm = null)
         {
             var datatype = typeof(T);
 
@@ -82,9 +82,11 @@ namespace NPOI.ExcelExtend
                     }
 
 
-                    foreach (var cell in values)
+                    foreach (var value in values)
                     {
-                        tmpRow.CreateCell(cellNumber).SetCellValue(cell);
+                        var cell = tmpRow.CreateCell(cellNumber);
+                        //cell.SetCellType(CellType.)
+                        cell.SetCellValueByType(workbook, value);
                         numberOfColumns = cellNumber;
                         cellNumber++;
                     }
@@ -119,7 +121,7 @@ namespace NPOI.ExcelExtend
             var workbook = new XSSFWorkbook();
             var worksheet = workbook.CreateSheet(string.Format("{0}", datatype.GetDisplayName()));
 
-            dataList.ExcelSheet(worksheet);
+            dataList.ExcelSheet(worksheet, workbook);
 
             //Save file
             FileStream file = new FileStream(fileName, FileMode.Create);
@@ -150,7 +152,11 @@ namespace NPOI.ExcelExtend
             return titleName;
         }
 
+        private static short GetDefaultDateTimeFormat()
+        {
+            IDataFormat dataFormatCustom = new XSSFWorkbook().CreateDataFormat();
+            return dataFormatCustom.GetFormat("yyyyMMdd HH:mm:ss");
+        }
 
-      
     }
 }
