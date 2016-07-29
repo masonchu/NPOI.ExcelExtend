@@ -55,8 +55,11 @@ namespace NPOI.ExcelExtend
                         model.Add(propertyInfo);
                     }
                 }
-
             }
+
+            /// order by excel column order prop
+            model = model.OrderBy(it => 
+            (it.GetCustomAttributes(true).Where(t => t.GetType() == typeof(ExcelColumnAttribute)).Single() as ExcelColumnAttribute).Order).ToList();
             return model;
         }
 
