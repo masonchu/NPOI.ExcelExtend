@@ -1,4 +1,5 @@
-﻿using NPOI.SS.UserModel;
+﻿using NPOI.ExcelExtend.Models;
+using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
@@ -10,32 +11,33 @@ namespace NPOI.ExcelExtend
 {
     internal static class CellExtension
     {
-        public static void SetCellValueByType(this ICell cell, IWorkbook workbook, object model, string dataFormat = "")
+        public static void SetCellValueByType(this ICell cell, IWorkbook workbook, CellModel model)
         {
-            if (model != null)
+            if (model != null && model.Value != null)
             {
                 double number;
                 DateTime datetime;
                 bool modelBool;
                 var newDataFormat = workbook.CreateDataFormat();
                 var style = workbook.CreateCellStyle();
-                cell.CellStyle = SetStyle(workbook, dataFormat);
+                cell.CellStyle = SetStyle(workbook, model.Format);
 
 
-                if (TryParseNumeric(model, out number))
+                if (TryParseNumeric(model.Value, out number))
                 {
                     cell.SetCellValue(number);
                 }
-                else if (TryParseBoolean(model, out modelBool))
+                else if (TryParseBoolean(model.Value, out modelBool))
                     cell.SetCellValue(modelBool);
-                else if (TryParseDateTime(model, out datetime))
+                else if (TryParseDateTime(model.Value, out datetime))
                 {
-                    cell.CellStyle = SetStyle(workbook, "yyyy/MM/dd HH:mm:ss");
+                    model.Format = string.IsNullOrWhiteSpace(model.Format) ? "yyyy/MM/dd HH:mm:ss" : model.Format;
+                    cell.CellStyle = SetStyle(workbook, model.Format.ToString());
                     cell.SetCellValue(datetime);
                 }
                 else
                 {
-                    var modelString = model.ToString();
+                    var modelString = model.Value.ToString();
                     cell.SetCellType(CellType.String);
                     cell.SetCellValue(modelString);
                 }

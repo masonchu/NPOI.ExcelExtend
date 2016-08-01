@@ -13,7 +13,7 @@ namespace NPOI.ExcelExtend.Test.Respostories
         public IQueryable<Member> All()
         {
             return new Member[] {
-                new Member() { FirstName = "Mason",LastName="Chu",Age =30,Gender = Gender.Male ,Height=178.21m, UpdateOn=DateTime.Now,IsMarried=false }
+                new Member() { FirstName = "Mason",LastName="Chu",Age =30,Gender = Gender.Male ,Height=178.21m, UpdateOn=DateTime.Now,IsMarried=false,Birthday = DateTime.Now.AddYears(-18) }
             }.AsQueryable();
         }
     }

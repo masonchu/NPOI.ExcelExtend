@@ -152,11 +152,5 @@ namespace NPOI.ExcelExtend
             return titleName;
         }
 
-        private static short GetDefaultDateTimeFormat()
-        {
-            IDataFormat dataFormatCustom = new XSSFWorkbook().CreateDataFormat();
-            return dataFormatCustom.GetFormat("yyyyMMdd HH:mm:ss");
-        }
-
     }
 }

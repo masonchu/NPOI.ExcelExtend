@@ -1,4 +1,5 @@
 ﻿using NPOI.ExcelExtend.Attributes;
+using NPOI.ExcelExtend.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -58,7 +59,7 @@ namespace NPOI.ExcelExtend
             }
 
             /// order by excel column order prop
-            model = model.OrderBy(it => 
+            model = model.OrderBy(it =>
             (it.GetCustomAttributes(true).Where(t => t.GetType() == typeof(ExcelColumnAttribute)).Single() as ExcelColumnAttribute).Order).ToList();
             return model;
         }
@@ -118,10 +119,10 @@ namespace NPOI.ExcelExtend
         /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
         /// <returns></returns>
-        public List<List<object>> GetPropertyValues(object data, List<List<object>> allValues = null)
+        public List<List<CellModel>> GetPropertyValues(object data, List<List<CellModel>> allValues = null)
         {
-            allValues = allValues == null ? new List<List<object>>() : allValues;
-            var propertyValues = new List<object>();
+            allValues = allValues == null ? new List<List<CellModel>>() : allValues;
+            var propertyValues = new List<CellModel>();
             var propertyInfos = data.GetType().GetProperties();
 
             foreach (var propertyInfo in ExcelColumns)
@@ -129,19 +130,24 @@ namespace NPOI.ExcelExtend
                 object[] attrs = propertyInfo.GetCustomAttributes(true);
                 foreach (object attr in attrs)
                 {
-                    ExcelColumnAttribute authAttr = attr as ExcelColumnAttribute;
+                    var authAttr = attr as ExcelColumnAttribute;
                     if (authAttr != null)
                     {
                         var val = propertyInfo.GetValue(data, null);
                         //var valString = val == null ? "" : val.ToString();
-                        propertyValues.Add(val);
+                        propertyValues.Add(new CellModel()
+                        {
+                            Order = authAttr.Order,
+                            Format = authAttr.Format,
+                            Value = val
+                        });
                     }
                     ///if this object of collection need to export
                     var childDataAttr = attr as ChildDataAttribute;
                     if (childDataAttr != null)
                     {
                         var vals = propertyInfo.GetValue(data, null);
-                        var val = vals as IEnumerable<Object>;
+                        var val = vals as IEnumerable<CellModel>;
                         foreach (var item in val)
                         {
                             GetPropertyValues(item, allValues);
