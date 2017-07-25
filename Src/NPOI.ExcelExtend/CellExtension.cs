@@ -18,46 +18,56 @@ namespace NPOI.ExcelExtend
                 double number;
                 DateTime datetime;
                 bool modelBool;
-                var newDataFormat = workbook.CreateDataFormat();
-                var style = workbook.CreateCellStyle();
-                cell.CellStyle = SetStyle(workbook, model.Format);
 
+                if (!string.IsNullOrWhiteSpace(model.Format))
+                {
+                    cell.CellStyle = GetStyle(workbook, model.Format);
+                }
 
                 if (TryParseNumeric(model.Value, out number))
                 {
                     cell.SetCellValue(number);
                 }
                 else if (TryParseBoolean(model.Value, out modelBool))
+                {
                     cell.SetCellValue(modelBool);
+                }
                 else if (TryParseDateTime(model.Value, out datetime))
                 {
-                    model.Format = string.IsNullOrWhiteSpace(model.Format) ? "yyyy/MM/dd HH:mm:ss" : model.Format;
-                    cell.CellStyle = SetStyle(workbook, model.Format.ToString());
+                    if (string.IsNullOrWhiteSpace(model.Format))
+                    {
+                        cell.CellStyle = GetStyle(workbook, "yyyy/MM/dd HH:mm:ss");
+                    }
                     cell.SetCellValue(datetime);
                 }
                 else
                 {
-                    var modelString = model.Value.ToString();
                     cell.SetCellType(CellType.String);
-                    cell.SetCellValue(modelString);
+                    cell.SetCellValue(model.Value.ToString());
                 }
             }
 
         }
 
-        public static XSSFCellStyle SetStyle(IWorkbook workbook, string value)
+        public static ICellStyle GetStyle(IWorkbook workbook, short datafmt)
         {
-            XSSFCellStyle cs = (XSSFCellStyle)workbook.CreateCellStyle();
-            //cs.BorderBottom = BorderStyle.Thin;
-            //cs.BorderTop = BorderStyle.Thin;
-            //cs.BorderLeft = BorderStyle.Thin;
-            //cs.BorderRight = BorderStyle.Thin;
-            //XSSFFont font = (XSSFFont)workbook.CreateFont();
-            //font.FontHeightInPoints = 12;
-            XSSFDataFormat format = (XSSFDataFormat)workbook.CreateDataFormat();
-            //cs.SetFont(font);
-            if (!string.IsNullOrWhiteSpace(value))
-                cs.DataFormat = format.GetFormat(value);
+            for (short i = 0; i < workbook.NumCellStyles; i++)
+            {
+                var style = workbook.GetCellStyleAt(i);
+                if (style.DataFormat == datafmt) return style;
+            }
+            return null;
+        }
+
+        public static ICellStyle GetStyle(IWorkbook workbook, string value)
+        {
+            var datafmt = workbook.CreateDataFormat().GetFormat(value);
+            var cs = GetStyle(workbook, datafmt);
+            if (cs == null)
+            {
+                cs = workbook.CreateCellStyle();
+                cs.DataFormat = datafmt;
+            }
             return cs;
         }
 
